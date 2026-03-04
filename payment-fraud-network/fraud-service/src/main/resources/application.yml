@@ -1,0 +1,38 @@
+server:
+  port: 8081 # Running on a different port than payment-service
+
+spring:
+  application:
+    name: fraud-service
+
+  # PostgreSQL Connection
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fraud_network_db
+    username: admin
+    password: secret
+    driver-class-name: org.postgresql.Driver
+
+  # Tell Spring to run our schema.sql file automatically on startup
+  sql:
+    init:
+      mode: always
+
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: fraud-checker-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.vyshaliprabananthlal.common"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+app:
+  kafka:
+    topic:
+      fraud-request: fraud.request.topic
+      fraud-reply: fraud.reply.topic

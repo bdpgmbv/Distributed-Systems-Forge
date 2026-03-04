@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: order-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/catalog_db
+    username: admin
+    password: password
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+  kafka:
+    bootstrap-servers: localhost:9094
+    producer:
+      # Change value-serializer from String to Avro
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      properties:
+        schema.registry.url: http://localhost:8081
+        # This prevents the producer from sending a bad schema
+        auto.register.schemas: true
+      acks: all
+      transaction-id-prefix: order-tx- # Enables Exactly-Once Semantics
+    consumer:
+      group-id: order-saga-group
+      auto-offset-reset: earliest
+      isolation-level: read_committed # Only read fully committed replies
+
+server:
+  port: 8082

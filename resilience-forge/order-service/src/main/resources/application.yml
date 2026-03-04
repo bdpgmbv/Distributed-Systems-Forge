@@ -1,0 +1,111 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: order-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/forge_db
+    username: forge_admin
+    password: forge_password
+    driver-class-name: org.postgresql.Driver
+
+  # This tells Spring to run our database setup script automatically
+  sql:
+    init:
+      mode: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # Expose health, metrics, and Prometheus endpoints for monitoring tools
+        include: health,info,metrics,prometheus,chaosmonkey
+  endpoint:
+    health:
+      show-details: always # Shows exactly WHAT is broken (e.g., DB vs Circuit Breaker)
+      probes:
+        enabled: true # Enables Kubernetes /actuator/health/liveness and /readiness
+  health:
+    circuitbreakers:
+      enabled: true # Let Actuator see Resilience4j Circuit Breakers
+    ratelimiters:
+      enabled: true # Let Actuator see Resilience4j Rate Limiters
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      registerHealthIndicator: true
+      slidingWindowSize: 5
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10s
+      permittedNumberOfCallsInHalfOpenState: 2
+  instances:
+    inventoryService:
+      baseConfig: default
+
+resilience4j.retry:
+  configs:
+    default:
+      maxAttempts: 3
+      waitDuration: 1s # Base wait time
+      enableExponentialBackoff: true
+      exponentialBackoffMultiplier: 2 # 1s, then 2s, then 4s...
+      enableRandomizedWait: true # This is the JITTER!
+      randomizedWaitFactor: 0.5 # Randomize the wait time by up to 50%
+  instances:
+    inventoryService:
+      baseConfig: default
+
+resilience4j.timelimiter:
+  configs:
+    default:
+      timeoutDuration: 2s # If the call takes longer than 2 seconds, cancel it!
+      cancelRunningFuture: true
+  instances:
+    inventoryService:
+      baseConfig: default
+
+# Add this to the bottom of your application.yml
+resilience4j.ratelimiter:
+  configs:
+    default:
+      registerHealthIndicator: true
+      limitForPeriod: 5 # Allow a maximum of 5 requests...
+      limitRefreshPeriod: 60s # ...every 60 seconds.
+      timeoutDuration: 0s # If no tokens are available, reject the request immediately
+  instances:
+    orderApi:
+      baseConfig: default
+
+resilience4j.bulkhead:
+  configs:
+    default:
+      registerHealthIndicator: true
+      maxConcurrentCalls: 2 # Only allow 2 requests to process at the exact same millisecond
+      maxWaitDuration: 0s # Don't queue up extra requests, fail them immediately
+  instances:
+    orderApi:
+      baseConfig: default
+
+chaos:
+  monkey:
+    enabled: true
+    # We want to watch our Service classes (where our InventoryClient lives)
+    watcher:
+      service: true
+    assaults:
+      level: 3 # Attack roughly 1 out of every 3 requests
+      latencyActive: true
+      latencyRangeStart: 3000 # Add at least 3 seconds of delay
+      latencyRangeEnd: 5000   # Up to 5 seconds
+      exceptionsActive: true
+      # Randomly throw a RuntimeException to test our Circuit Breakers/Retries
+      exception:
+        type: java.lang.RuntimeException
+        arguments:
+          - value: "CHAOS MONKEY STRIKES! 🐒💥"

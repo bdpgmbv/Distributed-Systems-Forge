@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: catalog-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/catalog_db
+    username: admin
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  sql:
+    init:
+      mode: always
+
+  kafka:
+    bootstrap-servers: localhost:9094
+    consumer:
+      group-id: catalog-group
+      auto-offset-reset: earliest
+    producer:
+      acks: all
+      # Add this line to enable Kafka Producer Transactions!
+      transaction-id-prefix: catalog-tx-
+
+server:
+  port: 8080

@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS delayed_emails (
+    id SERIAL PRIMARY KEY,
+    order_id VARCHAR(255) NOT NULL,
+    email_type VARCHAR(100) NOT NULL,
+    send_at TIMESTAMP NOT NULL,
+    status VARCHAR(50) DEFAULT 'PENDING'
+);

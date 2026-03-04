@@ -1,0 +1,12 @@
+{
+  "namespace": "com.vyshaliprabananthlal.ecommerce.schema",
+  "type": "record",
+  "name": "OrderEvent",
+  "fields": [
+    {"name": "orderId", "type": "string"},
+    {"name": "amount", "type": "double"},
+    {"name": "status", "type": "string"}
+    // If you want to add a field later (Evolution), you MUST provide a default value:
+    // {"name": "discountCode", "type": ["null", "string"], "default": null}
+  ]
+}

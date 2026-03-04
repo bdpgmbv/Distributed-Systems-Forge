@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS processed_commands (
+    command_id VARCHAR(255) PRIMARY KEY,
+    processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

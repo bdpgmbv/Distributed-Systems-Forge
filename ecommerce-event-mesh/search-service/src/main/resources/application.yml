@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: search-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/catalog_db
+    username: admin
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  sql:
+    init:
+      mode: always
+
+  kafka:
+    bootstrap-servers: localhost:9094
+    consumer:
+      # This is crucial! This group ID tracks what messages this specific service has read
+      group-id: search-group
+      auto-offset-reset: earliest
+      # Add this line! Ignore "uncommitted" or rolled-back messages
+      isolation-level: read_committed
+      # We read the JSON payload as a simple String first
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+server:
+  port: 8081

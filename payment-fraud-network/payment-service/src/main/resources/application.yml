@@ -1,0 +1,23 @@
+server:
+  port: 8080 # Payment service will run on localhost:8080
+
+spring:
+  application:
+    name: payment-service
+  kafka:
+    bootstrap-servers: localhost:9092 # Points to our Docker Kafka
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: payment-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.vyshaliprabananthlal.common" # Trust our DTOs!
+app:
+  kafka:
+    topic:
+      fraud-request: fraud.request.topic
+      fraud-reply: fraud.reply.topic
