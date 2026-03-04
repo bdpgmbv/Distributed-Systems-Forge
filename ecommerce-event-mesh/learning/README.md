@@ -1,10 +1,10 @@
-pompt used in Gemini: 
-Now I want you to teach all the techniques used in the above implementation end to end in easy to understand english 
-Go by one topic at a time 
-For each topic - give me everything of the below: 
-What it is, why should we use it, when should we use, Where to use, real world scenarios or examples
-What are the different ways doing these - what are the advantages, disadvantages, what I should choose when, what is the most commonly used practice 
-If it is something related to Postgresql - How to do it with DB2 
-all possible Interview questions and answers from beginner to senior architect level 
-What are the all possible follow up questions that the interviewer can ask in an interview 
-If your answers go above the length - split it in parts in multiple responses
+- pompt used in Gemini: 
+- Now I want you to teach all the techniques used in the above implementation end to end in easy to understand english 
+- Go by one topic at a time 
+- For each topic - give me everything of the below: 
+- What it is, why should we use it, when should we use, Where to use, real world scenarios or examples
+- What are the different ways doing these - what are the advantages, disadvantages, what I should choose when, what is the most commonly used practice 
+- If it is something related to Postgresql - How to do it with DB2 
+- all possible Interview questions and answers from beginner to senior architect level 
+- What are the all possible follow up questions that the interviewer can ask in an interview 
+- If your answers go above the length - split it in parts in multiple responses
