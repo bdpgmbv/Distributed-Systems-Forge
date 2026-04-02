@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels: { app: k8s-demo }
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1          # Create 1 extra pod during update
+      maxUnavailable: 0     # Always maintain full capacity
+  template:
+    metadata:
+      labels: { app: k8s-demo }
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: k8s-demo
+          image: k8s-demo:latest
+          ports: [{ containerPort: 8080 }]
+          resources:
+            requests: { cpu: 250m, memory: 512Mi }
+            limits: { cpu: 1000m, memory: 1Gi }
+          # LIVENESS: Is the JVM alive? Fail = restart pod.
+          # NEVER include DB/Redis checks here!
+          livenessProbe:
+            httpGet: { path: /actuator/health/liveness, port: 8080 }
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          # READINESS: Can it handle traffic? Fail = remove from LB.
+          # Include dependency checks (DB, Redis, Kafka).
+          readinessProbe:
+            httpGet: { path: /actuator/health/readiness, port: 8080 }
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          # STARTUP: Has it finished initializing?
+          startupProbe:
+            httpGet: { path: /actuator/health/liveness, port: 8080 }
+            failureThreshold: 30
+            periodSeconds: 2
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: "-XX:MaxRAMPercentage=75.0"

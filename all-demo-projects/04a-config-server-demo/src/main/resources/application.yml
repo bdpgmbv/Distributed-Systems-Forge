@@ -1,0 +1,16 @@
+# DEFAULT: Config Server mode on :8888
+server.port: 8888
+spring:
+  application.name: config-server
+  profiles.active: native
+  cloud.config.server.native.search-locations: file:./config-repo
+management.endpoints.web.exposure.include: health,refresh,env
+logging.level.com.demo: DEBUG
+---
+# CLIENT mode: run with --spring.profiles.active=client
+spring:
+  config:
+    activate.on-profile: client
+    import: configserver:http://localhost:8888
+  application.name: demo-service
+server.port: 8080

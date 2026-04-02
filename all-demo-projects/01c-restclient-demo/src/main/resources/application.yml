@@ -1,0 +1,8 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: 01c-restclient-demo
+logging:
+  level:
+    com.demo: DEBUG

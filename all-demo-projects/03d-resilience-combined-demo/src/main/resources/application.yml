@@ -1,0 +1,38 @@
+server.port: 8080
+spring.application.name: resilience-combined-demo
+resilience4j:
+  circuitbreaker:
+    instances:
+      userService:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 15s
+        permitted-number-of-calls-in-half-open-state: 3
+    circuit-breaker-aspect-order: 1
+  retry:
+    instances:
+      userService:
+        max-attempts: 3
+        wait-duration: 300ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+    retry-aspect-order: 2
+  bulkhead:
+    instances:
+      userService:
+        max-concurrent-calls: 5
+        max-wait-duration: 500ms
+    bulkhead-aspect-order: 3
+  ratelimiter:
+    instances:
+      userService:
+        limit-for-period: 10
+        limit-refresh-period: 10s
+        timeout-duration: 0
+    rate-limiter-aspect-order: 4
+logging.level:
+  com.demo: DEBUG
+  io.github.resilience4j: DEBUG
+management:
+  endpoints.web.exposure.include: health,circuitbreakers
+  health.circuitbreakers.enabled: true

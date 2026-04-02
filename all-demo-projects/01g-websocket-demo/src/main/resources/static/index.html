@@ -1,0 +1,30 @@
+<!DOCTYPE html><html><head><title>WebSocket Demo</title>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<style>body{font-family:monospace;background:#0a0a0f;color:#e2e8f0;padding:20px;max-width:700px;margin:0 auto}h2{color:#c084fc}#log,#rawlog{background:#111;border:1px solid #333;border-radius:8px;padding:10px;height:200px;overflow-y:auto;font-size:13px;margin:8px 0}input{background:#1a1a2e;border:1px solid #333;color:#e2e8f0;padding:6px 10px;border-radius:6px;width:65%}button{background:#c084fc;border:none;color:#000;padding:6px 14px;border-radius:6px;cursor:pointer;font-weight:600}</style>
+</head><body>
+<h1 style="color:#c084fc">📡 WebSocket Demo</h1>
+<h2>STOMP (pub/sub)</h2>
+<div>Name: <input id="name" value="User1" style="width:80px"></div>
+<div id="log"></div>
+<input id="si" placeholder="Message..."><button onclick="sendStomp()">Broadcast</button>
+<h2>Raw WebSocket</h2>
+<div id="rawlog"></div>
+<input id="ri" placeholder="Message..."><button onclick="sendRaw()">Send</button>
+<p style="color:#67e8f9;font-size:12px">Open this page in 2 tabs to see real-time messaging. curl localhost:8080/push to trigger server push.</p>
+<script>
+var sc=null,sock=new SockJS('/ws');sc=Stomp.over(sock);sc.debug=null;
+sc.connect({},function(){
+  add('log','✅ STOMP connected');
+  sc.subscribe('/topic/chat',function(m){var d=JSON.parse(m.body);add('log',d.from+': '+d.text);});
+  sc.subscribe('/topic/alerts',function(m){var d=JSON.parse(m.body);add('log','🔔 '+d.text);});
+});
+function sendStomp(){var i=document.getElementById('si');sc.send('/app/chat',{},JSON.stringify({from:document.getElementById('name').value,text:i.value}));add('log','You: '+i.value);i.value='';}
+var rw=new WebSocket('ws://'+location.host+'/ws/raw');
+rw.onopen=function(){add('rawlog','✅ Connected');};
+rw.onmessage=function(e){add('rawlog',e.data);};
+function sendRaw(){var i=document.getElementById('ri');rw.send(i.value);add('rawlog','You: '+i.value);i.value='';}
+function add(id,t){var d=document.getElementById(id);d.innerHTML+='<div>'+t+'</div>';d.scrollTop=d.scrollHeight;}
+document.getElementById('si').onkeypress=function(e){if(e.key==='Enter')sendStomp();};
+document.getElementById('ri').onkeypress=function(e){if(e.key==='Enter')sendRaw();};
+</script></body></html>

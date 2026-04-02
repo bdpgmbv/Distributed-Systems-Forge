@@ -1,0 +1,3 @@
+server.port: 8080
+spring.application.name: two-level-cache-demo
+logging.level.com.demo: DEBUG

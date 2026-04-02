@@ -1,0 +1,6 @@
+server.port: 8080
+spring.application.name: tracing-demo
+management.tracing.sampling.probability: 1.0
+logging:
+  level.com.demo: DEBUG
+  pattern.level: "%5p [%X{traceId:-},%X{spanId:-}]"

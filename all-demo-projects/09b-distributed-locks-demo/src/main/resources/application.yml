@@ -1,0 +1,3 @@
+server.port: 8080
+spring.application.name: locks-demo
+logging.level.com.demo: DEBUG

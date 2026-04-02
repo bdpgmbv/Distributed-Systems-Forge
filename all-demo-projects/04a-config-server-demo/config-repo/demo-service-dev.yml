@@ -1,0 +1,6 @@
+# demo-service + dev profile
+app:
+  greeting: "Hello from DEV Config Server!"
+  max-items: 10
+  feature:
+    new-dashboard: true

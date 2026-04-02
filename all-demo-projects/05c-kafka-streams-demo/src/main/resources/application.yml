@@ -1,0 +1,14 @@
+server.port: 8080
+spring:
+  application.name: kafka-streams-demo
+  kafka:
+    bootstrap-servers: localhost:9092
+    streams:
+      application-id: streams-demo
+      properties:
+        default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        default.value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+logging.level.com.demo: DEBUG

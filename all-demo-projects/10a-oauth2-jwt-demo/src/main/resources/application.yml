@@ -1,0 +1,6 @@
+server.port: 8080
+spring.application.name: jwt-demo
+app.jwt:
+  secret: mySecretKeyThatIsAtLeast256BitsLongForHS256Algorithm123456
+  expiration-ms: 3600000
+logging.level.com.demo: DEBUG

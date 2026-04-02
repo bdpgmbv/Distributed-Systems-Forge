@@ -1,0 +1,7 @@
+server.port: 8080
+spring.application.name: metrics-demo
+management:
+  endpoints.web.exposure.include: health,prometheus,metrics
+  endpoint.health: { show-details: always, probes.enabled: true }
+  health: { livenessstate.enabled: true, readinessstate.enabled: true }
+logging.level.com.demo: DEBUG

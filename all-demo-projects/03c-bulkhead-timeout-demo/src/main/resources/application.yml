@@ -1,0 +1,16 @@
+server.port: 8080
+spring.application.name: bulkhead-timeout-demo
+resilience4j:
+  bulkhead:
+    instances:
+      userService:
+        max-concurrent-calls: 3
+        max-wait-duration: 500ms
+  timelimiter:
+    instances:
+      userService:
+        timeout-duration: 2s
+        cancel-running-future: true
+logging.level:
+  com.demo: DEBUG
+  io.github.resilience4j: DEBUG

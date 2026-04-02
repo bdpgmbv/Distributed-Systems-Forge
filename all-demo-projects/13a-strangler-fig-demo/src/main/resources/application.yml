@@ -1,0 +1,7 @@
+server.port: 8080
+spring.application.name: strangler-fig-demo
+app.routing:
+  users: NEW
+  orders: MONOLITH
+  payments: PARALLEL
+logging.level.com.demo: DEBUG

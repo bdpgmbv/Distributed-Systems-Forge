@@ -1,0 +1,7 @@
+# Specific to demo-service
+app:
+  greeting: "Hello from Config Server!"
+  max-items: 100
+  feature:
+    new-dashboard: false
+    dark-mode: true

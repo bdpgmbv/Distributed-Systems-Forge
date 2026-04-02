@@ -1,0 +1,21 @@
+server.port: 8080
+spring.application.name: retry-ratelimiter-demo
+resilience4j:
+  retry:
+    instances:
+      userService:
+        max-attempts: 4
+        wait-duration: 500ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - java.lang.RuntimeException
+  ratelimiter:
+    instances:
+      apiLimit:
+        limit-for-period: 5
+        limit-refresh-period: 10s
+        timeout-duration: 0
+logging.level:
+  com.demo: DEBUG
+  io.github.resilience4j: DEBUG

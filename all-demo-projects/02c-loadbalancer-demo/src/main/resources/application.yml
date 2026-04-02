@@ -1,0 +1,25 @@
+server.port: 8080
+spring:
+  application.name: loadbalancer-demo
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            user-service:
+              - uri: http://localhost:8081
+                metadata:
+                  zone: us-east-1a
+                  weight: "3"
+                  instance-id: instance-A
+              - uri: http://localhost:8091
+                metadata:
+                  zone: us-east-1b
+                  weight: "1"
+                  instance-id: instance-B
+              - uri: http://localhost:8092
+                metadata:
+                  zone: us-east-1b
+                  weight: "1"
+                  instance-id: instance-C
+logging.level.com.demo: DEBUG

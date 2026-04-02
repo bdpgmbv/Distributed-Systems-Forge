@@ -1,0 +1,7 @@
+# Shared by ALL services
+app:
+  shared:
+    message: "Hello from shared config!"
+logging:
+  level:
+    root: INFO
